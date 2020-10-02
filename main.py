@@ -1,4 +1,3 @@
-# bot.py
 import os
 from time import sleep
 
@@ -28,19 +27,18 @@ async def on_message(message):
             or PREFIX is not message.content[0]:
         return
 
-    # player = client.get_user(int(USER_ID))
-    # print(get(client.get_all_members(), id="402169053013213195"))
     connected = message.author.voice
 
-    # print(client.users)
-    #
-    # for user in connected.channel.members:
-    #     print(user)
-    # if connected:
-    #     if player not in connected.channel.members:
-    #         await message.channel.send('Player is not connected to the voice channel')
-    #         return
-    if not connected:
+    if connected:
+        channel = await client.fetch_channel(connected.channel.id)
+        if int(USER_ID) in channel.voice_states:
+            if not channel.voice_states[int(USER_ID)].self_stream:
+                await message.channel.send('Player is not streaming')
+                return
+        else:
+            await message.channel.send('Player is not connected to the voice channel')
+            return
+    else:
         await message.channel.send('You are not connected to any voice channel')
         return
 
