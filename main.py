@@ -11,6 +11,7 @@ from youtubesearchpython import SearchVideos
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('DISCORD_PREFIX')
+USER_ID = os.getenv('DISCORD_USER_ID')
 
 client = discord.Client()
 
@@ -22,10 +23,25 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message)
     if message.author == client.user \
             or len(message.content) < 2 \
             or PREFIX is not message.content[0]:
+        return
+
+    # player = client.get_user(int(USER_ID))
+    # print(get(client.get_all_members(), id="402169053013213195"))
+    connected = message.author.voice
+
+    # print(client.users)
+    #
+    # for user in connected.channel.members:
+    #     print(user)
+    # if connected:
+    #     if player not in connected.channel.members:
+    #         await message.channel.send('Player is not connected to the voice channel')
+    #         return
+    if not connected:
+        await message.channel.send('You are not connected to any voice channel')
         return
 
     command = message.content[1]
